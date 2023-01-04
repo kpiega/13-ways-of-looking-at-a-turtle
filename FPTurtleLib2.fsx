@@ -13,7 +13,7 @@ Unlike FPTurtleLib.fsx, the Move and SetColor functions return a response.
 
 // requires Common.fsx to be loaded by parent file
 // Uncomment to use this file standalone
-//#load "Common.fsx"
+#load "Common.fsx"
 
 open System
 open Common

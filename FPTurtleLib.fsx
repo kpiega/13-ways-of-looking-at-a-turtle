@@ -12,7 +12,7 @@ Common code for FP-style immutable turtle functions.
 
 // requires Common.fsx to be loaded by parent file
 // Uncomment to use this file standalone
-// #load "Common.fsx"
+#load "Common.fsx"
 
 open System
 open Common
