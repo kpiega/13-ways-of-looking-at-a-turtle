@@ -26,38 +26,36 @@ open Common
 // ============================================================================
 
 // ----------------------------
-// Turtle Interface 
+// Turtle Interface
 // ----------------------------
 
 // a quick alias for readability
-type TurtleState = FPTurtleLib.Turtle.TurtleState 
+type TurtleState = FPTurtleLib.Turtle.TurtleState
 
-type TurtleFunctions = {
-    move : Distance -> TurtleState -> TurtleState
-    turn : Angle -> TurtleState -> TurtleState
-    penUp : TurtleState -> TurtleState
-    penDown : TurtleState -> TurtleState
-    setColor : PenColor -> TurtleState -> TurtleState
-    }
+type TurtleFunctions =
+    { move: Distance -> TurtleState -> TurtleState
+      turn: Angle -> TurtleState -> TurtleState
+      penUp: TurtleState -> TurtleState
+      penDown: TurtleState -> TurtleState
+      setColor: PenColor -> TurtleState -> TurtleState }
 // Note that there are NO "units" in these functions, unlike the OO version.
 
 
 // ----------------------------
-// Turtle Api Layer 
+// Turtle Api Layer
 // ----------------------------
 
-module TurtleApiLayer_FP = 
+module TurtleApiLayer_FP =
 
     open Result
     open FPTurtleLib
-    
+
     /// Function to log a message
-    let log message =
-        printfn "%s" message 
+    let log message = printfn "%s" message
 
     let initialTurtleState = Turtle.initialTurtleState
 
-    type ErrorMessage = 
+    type ErrorMessage =
         | InvalidDistance of string
         | InvalidAngle of string
         | InvalidColor of string
@@ -66,18 +64,16 @@ module TurtleApiLayer_FP =
     // convert the distance parameter to a float, or throw an exception
     let validateDistance distanceStr =
         try
-            Ok (float distanceStr)
-        with
-        | ex -> 
-            Error (InvalidDistance distanceStr)
+            Ok(float distanceStr)
+        with ex ->
+            Error(InvalidDistance distanceStr)
 
     // convert the angle parameter to a float, or throw an exception
     let validateAngle angleStr =
         try
-            Ok ((float angleStr) * 1.0<Degrees>)
-        with
-        | ex -> 
-            Error (InvalidAngle angleStr)
+            Ok((float angleStr) * 1.0<Degrees>)
+        with ex ->
+            Error(InvalidAngle angleStr)
 
     // convert the color parameter to a PenColor, or throw an exception
     let validateColor colorStr =
@@ -85,86 +81,84 @@ module TurtleApiLayer_FP =
         | "Black" -> Ok Black
         | "Blue" -> Ok Blue
         | "Red" -> Ok Red
-        | _ -> 
-            Error (InvalidColor colorStr)
+        | _ -> Error(InvalidColor colorStr)
 
     type TurtleApi(turtleFunctions: TurtleFunctions) =
 
         let mutable state = initialTurtleState
 
         /// Update the mutable state value
-        let updateState newState =
-            state <- newState
+        let updateState newState = state <- newState
 
         /// Execute the command string, and return a Result
         /// Exec : commandStr:string -> Result<unit,ErrorMessage>
-        member this.Exec (commandStr:string) = 
+        member this.Exec(commandStr: string) =
             let tokens = commandStr.Split(' ') |> List.ofArray |> List.map trimString
 
             // return Ok of unit, or Error
             match tokens with
-            | [ "Move"; distanceStr ] -> result {
-                let! distance = validateDistance distanceStr 
-                let newState = turtleFunctions.move distance state
-                updateState newState
+            | [ "Move"; distanceStr ] ->
+                result {
+                    let! distance = validateDistance distanceStr
+                    let newState = turtleFunctions.move distance state
+                    updateState newState
                 }
-            | [ "Turn"; angleStr ] -> result {
-                let! angle = validateAngle angleStr 
-                let newState = turtleFunctions.turn angle state
-                updateState newState
+            | [ "Turn"; angleStr ] ->
+                result {
+                    let! angle = validateAngle angleStr
+                    let newState = turtleFunctions.turn angle state
+                    updateState newState
                 }
-            | [ "Pen"; "Up" ] -> result {
-                let newState = turtleFunctions.penUp state
-                updateState newState
+            | [ "Pen"; "Up" ] ->
+                result {
+                    let newState = turtleFunctions.penUp state
+                    updateState newState
                 }
-            | [ "Pen"; "Down" ] -> result {
-                let newState = turtleFunctions.penDown state
-                updateState newState
+            | [ "Pen"; "Down" ] ->
+                result {
+                    let newState = turtleFunctions.penDown state
+                    updateState newState
                 }
-            | [ "SetColor"; colorStr ] -> result {
-                let! color = validateColor colorStr
-                let newState = turtleFunctions.setColor color state
-                updateState newState
+            | [ "SetColor"; colorStr ] ->
+                result {
+                    let! color = validateColor colorStr
+                    let newState = turtleFunctions.setColor color state
+                    updateState newState
                 }
-            | _ -> 
-                Error (InvalidCommand commandStr)
-        
+            | _ -> Error(InvalidCommand commandStr)
+
 
 // ----------------------------
-// Multiple Turtle Implementations 
+// Multiple Turtle Implementations
 // ----------------------------
 
-module TurtleImplementation_FP = 
+module TurtleImplementation_FP =
     open FPTurtleLib
 
-    let normalSize() = 
+    let normalSize () =
         let log = printfn "%s"
         // return a record of functions
-        {
-            move = Turtle.move log 
-            turn = Turtle.turn log 
-            penUp = Turtle.penUp log
-            penDown = Turtle.penDown log
-            setColor = Turtle.setColor log 
-        }
+        { move = Turtle.move log
+          turn = Turtle.turn log
+          penUp = Turtle.penUp log
+          penDown = Turtle.penDown log
+          setColor = Turtle.setColor log }
 
-    let halfSize() = 
-        let normalSize = normalSize() 
+    let halfSize () =
+        let normalSize = normalSize ()
         // return a reduced turtle
-        { normalSize with
-            move = fun dist -> normalSize.move (dist/2.0) 
-        }
+        { normalSize with move = fun dist -> normalSize.move (dist / 2.0) }
 
 // ----------------------------
-// Turtle Api Client  
+// Turtle Api Client
 // ----------------------------
 
-module TurtleApiClient_FP = 
+module TurtleApiClient_FP =
 
-    open TurtleApiLayer_FP 
+    open TurtleApiLayer_FP
     open Result
 
-    let drawTriangle(api:TurtleApi) = 
+    let drawTriangle (api: TurtleApi) =
         result {
             do! api.Exec "Move 100"
             do! api.Exec "Turn 120"
@@ -172,20 +166,19 @@ module TurtleApiClient_FP =
             do! api.Exec "Turn 120"
             do! api.Exec "Move 100"
             do! api.Exec "Turn 120"
-            } |> ignore
+        }
+        |> ignore
 
 // ----------------------------
 // Turtle Api Tests  (FP style)
 // ----------------------------
 
 do
-    let turtleFns = TurtleImplementation_FP.normalSize()   // a TurtleFunctions type
+    let turtleFns = TurtleImplementation_FP.normalSize () // a TurtleFunctions type
     let api = TurtleApiLayer_FP.TurtleApi(turtleFns)
-    TurtleApiClient_FP.drawTriangle(api) 
+    TurtleApiClient_FP.drawTriangle (api)
 
 do
-    let turtleFns = TurtleImplementation_FP.halfSize()
+    let turtleFns = TurtleImplementation_FP.halfSize ()
     let api = TurtleApiLayer_FP.TurtleApi(turtleFns)
-    TurtleApiClient_FP.drawTriangle(api) 
-
-
+    TurtleApiClient_FP.drawTriangle (api)

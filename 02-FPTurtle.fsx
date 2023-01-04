@@ -31,11 +31,10 @@ open FPTurtleLib
 // FP Turtle Client
 // ======================================
 
-module FPTurtleClient = 
+module FPTurtleClient =
 
     /// Function to log a message
-    let log message =
-        printfn "%s" message 
+    let log message = printfn "%s" message
 
     // versions with log baked in (via partial application)
     let move = Turtle.move log
@@ -44,56 +43,53 @@ module FPTurtleClient =
     let penUp = Turtle.penUp log
     let setColor = Turtle.setColor log
 
-    let drawTriangle() = 
+    let drawTriangle () =
         Turtle.initialTurtleState
-        |> move 100.0 
+        |> move 100.0
         |> turn 120.0<Degrees>
-        |> move 100.0 
+        |> move 100.0
         |> turn 120.0<Degrees>
-        |> move 100.0 
+        |> move 100.0
         |> turn 120.0<Degrees>
-        // back home at (0,0) with angle 0
-            
-    let drawThreeLines() = 
+    // back home at (0,0) with angle 0
+
+    let drawThreeLines () =
         Turtle.initialTurtleState
-        // draw black line 
+        // draw black line
         |> penDown
         |> setColor Black
-        |> move 100.0 
+        |> move 100.0
         // move without drawing
         |> penUp
         |> turn 90.0<Degrees>
-        |> move 100.0 
+        |> move 100.0
         |> turn 90.0<Degrees>
-        // draw red line 
+        // draw red line
         |> penDown
         |> setColor Red
         |> move 100.0
         // move without drawing
         |> penUp
         |> turn 90.0<Degrees>
-        |> move 100.0 
+        |> move 100.0
         |> turn 90.0<Degrees>
         // back home at (0,0) with angle 0
-        // draw diagonal blue line 
+        // draw diagonal blue line
         |> penDown
         |> setColor Blue
         |> turn 45.0<Degrees>
         |> move 100.0
 
-    let drawPolygon n = 
-        let angle = 180.0 - (360.0/float n) 
+    let drawPolygon n =
+        let angle = 180.0 - (360.0 / float n)
         let angleDegrees = angle * 1.0<Degrees>
 
         // define a function that draws one side
-        let oneSide state sideNumber = 
-            state
-            |> move 100.0 
-            |> turn angleDegrees 
+        let oneSide state sideNumber =
+            state |> move 100.0 |> turn angleDegrees
 
         // repeat for all sides
-        [1..n] 
-        |> List.fold oneSide Turtle.initialTurtleState
+        [ 1..n ] |> List.fold oneSide Turtle.initialTurtleState
 
 // ======================================
 // FP Turtle tests
@@ -104,5 +100,3 @@ FPTurtleClient.drawTriangle() |> ignore
 FPTurtleClient.drawThreeLines() |> ignore
 FPTurtleClient.drawPolygon 4 |> ignore
 *)
-
-

@@ -22,9 +22,9 @@ open Common
 // ======================================
 
 open Result
-    
 
-type ErrorMessage = 
+
+type ErrorMessage =
     | InvalidDistance of string
     | InvalidAngle of string
     | InvalidColor of string
@@ -33,18 +33,16 @@ type ErrorMessage =
 // convert the distance parameter to a float, or throw an exception
 let validateDistance distanceStr =
     try
-        Ok (float distanceStr)
-    with
-    | ex -> 
-        Error (InvalidDistance distanceStr)
+        Ok(float distanceStr)
+    with ex ->
+        Error(InvalidDistance distanceStr)
 
 // convert the angle parameter to a float, or throw an exception
 let validateAngle angleStr =
     try
-        Ok ((float angleStr) * 1.0<Degrees>)
-    with
-    | ex -> 
-        Error (InvalidAngle angleStr)
+        Ok((float angleStr) * 1.0<Degrees>)
+    with ex ->
+        Error(InvalidAngle angleStr)
 
 // convert the color parameter to a PenColor, or throw an exception
 let validateColor colorStr =
@@ -52,5 +50,4 @@ let validateColor colorStr =
     | "Black" -> Ok Black
     | "Blue" -> Ok Blue
     | "Red" -> Ok Red
-    | _ -> 
-        Error (InvalidColor colorStr)
+    | _ -> Error(InvalidColor colorStr)
